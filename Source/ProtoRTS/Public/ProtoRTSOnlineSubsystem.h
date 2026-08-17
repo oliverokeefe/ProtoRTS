@@ -16,28 +16,32 @@ struct FSessionResultInfo
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	FString SessionName = "";
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	// Added for Lobby Name -Gabe
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
+	FString LobbyName = "";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	FString SessionId = "";
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	int32 Index = 0;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	FString HostName = "";
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	int32 CurrentPlayers = 0;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	int32 MaxPlayers = 0;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	int32 Ping = 0;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Online|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Online|Session")
 	bool bIsLAN = true;
 };
 
@@ -62,7 +66,7 @@ public:
 
 	// Blueprint-callable functions
 	UFUNCTION(BlueprintCallable, Category = "Online|Session")
-	void CreateSession(int32 MaxPlayers = 2, bool bIsLAN = true);
+	void CreateSession(int32 MaxPlayers = 2, bool bIsLAN = true, FString LobbyName = ""); // Added LobbyName -Gabe
 
 	UFUNCTION(BlueprintCallable, Category = "Online|Session")
 	void FindSessions(int32 MaxSearchResults = 20, bool bIsLAN = true);

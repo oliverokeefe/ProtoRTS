@@ -5,7 +5,8 @@
 #include "Online/OnlineSessionNames.h"
 #include "Kismet/GameplayStatics.h"
 
-void UProtoRTSOnlineSubsystem::CreateSession(int32 MaxPlayers, bool bIsLAN)
+// Edited for supporting lobby name
+void UProtoRTSOnlineSubsystem::CreateSession(int32 MaxPlayers, bool bIsLAN, FString LobbyName)
 {
 	IOnlineSessionPtr Sessions = GetSessionInterface();
 	if (!Sessions.IsValid())
@@ -22,6 +23,13 @@ void UProtoRTSOnlineSubsystem::CreateSession(int32 MaxPlayers, bool bIsLAN)
 	Settings.bUseLobbiesIfAvailable = true;
 	Settings.bAllowJoinInProgress = true;
 	Settings.bAllowJoinViaPresence = true;
+
+	// Addition to add LobbyName property to settings
+	Settings.Set(
+		FName("LOBBY_NAME"),
+		LobbyName,
+		EOnlineDataAdvertisementType::ViaOnlineServiceAndPing
+	);
 
 	OnCreateSessionCompleteDelegateHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(FOnCreateSessionCompleteDelegate::CreateUObject(this, &UProtoRTSOnlineSubsystem::OnCreateSessionCompleteInternal));
 
@@ -100,6 +108,27 @@ void UProtoRTSOnlineSubsystem::GetSessionSearchResults(TArray<FSessionResultInfo
 
 		// Get session name
 		SearchResult.Session.SessionSettings.Get(FName(TEXT("SESSION_NAME")), Result.SessionName);
+
+		// Get Lobby Name. Added by Gabe to account for Lobby Name
+		FString FoundLobbyName;
+		SearchResult.Session.SessionSettings.Get(
+			FName("Lobby_Name"),
+			FoundLobbyName
+		);
+		if (FoundLobbyName.IsEmpty()) { // If no lobby name, use host name
+			if (SearchResult.Session.OwningUserName.Len() > 0)
+			{
+				Result.LobbyName = SearchResult.Session.OwningUserName;
+			}
+			else
+			{
+				Result.LobbyName = TEXT("Unknown Host");
+			}
+		}
+		else {
+			Result.LobbyName = FoundLobbyName;
+		}
+		
 
 		// Get session ID
 		Result.SessionId = SearchResult.Session.GetSessionIdStr();
